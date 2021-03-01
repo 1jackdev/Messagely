@@ -63,7 +63,12 @@ class User {
   /** All: basic info on all users:
    * [{username, first_name, last_name, phone}, ...] */
 
-  static async all() {}
+  static async all() {
+    const results = await db.query(`
+      SELECT username, first_name, last_name, phone FROM users
+    `);
+    return results.rows;
+  }
 
   /** Get: get user by username
    *
@@ -74,7 +79,16 @@ class User {
    *          join_at,
    *          last_login_at } */
 
-  static async get(username) {}
+  static async get(username) {
+    const results = await db.query(
+      `
+      SELECT * FROM users
+      WHERE username=$1
+    `,
+      [username]
+    );
+    return results.rows;
+  }
 
   /** Return messages from this user.
    *
