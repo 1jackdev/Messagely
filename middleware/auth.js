@@ -30,7 +30,7 @@ function ensureLoggedIn(req, res, next) {
 
 function ensureCorrectUser(req, res, next) {
   try {
-    if (req.user.username === req.params.username) {
+    if (req.user === req.params.username) {
       return next();
     } else {
       return next({ status: 401, message: "Unauthorized" });

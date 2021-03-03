@@ -46,6 +46,11 @@ router.post("/", ensureLoggedIn, async (req, res, next) => {
     const newMessage = await Message.create(req.body);
     return res.json({ newMessage });
   } catch (err) {
+    if (err.code === "23503") {
+      return next(
+        new ExpressError("Invalid username(s).", 400)
+      );
+    }
     return next(err);
   }
 });

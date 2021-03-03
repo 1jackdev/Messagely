@@ -15,10 +15,12 @@ const { SECRET_KEY } = require("../config");
 router.post("/login", async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    if (User.authenticate(username, password)) {
+    if (await User.authenticate(username, password)) {
       User.updateLoginTimestamp(username);
-      const token = jwt.sign(username, SECRET_KEY);
-      return res.json({ message: "Logged in!", token });
+      const token = jwt.sign({ username }, SECRET_KEY);
+      return res.json({ token });
+    } else {
+      throw new ExpressError("Invalid username/password", 400);
     }
   } catch (err) {
     return next(err);
@@ -33,13 +35,11 @@ router.post("/login", async (req, res, next) => {
 router.post("/register", async (req, res, next) => {
   try {
     const results = await User.register(req.body);
-    const { username, password } = results.rows[0];
-    // if authenticated, login user and update last login
-    if (User.authenticate(username, password)) {
-      User.updateLoginTimestamp(username);
-      const token = jwt.sign(username, SECRET_KEY);
-      return res.json({ message: "Logged in!", token });
-    }
+    const { username } = results;
+    // login user and update last login
+    User.updateLoginTimestamp(username);
+    const token = jwt.sign({ username }, SECRET_KEY);
+    return res.json({ message: "Logged in!", token });
   } catch (err) {
     if (err.code === "23505") {
       return next(
