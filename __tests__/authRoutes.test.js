@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const app = require("../app");
 const db = require("../db");
 const User = require("../models/user");
+const BCRYPT_WORK_FACTOR = 1;
 
 
 describe("Auth Routes Test", function () {

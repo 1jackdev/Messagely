@@ -2,7 +2,7 @@ process.env.NODE_ENV = "test";
 const db = require("../db");
 const User = require("../models/user");
 const Message = require("../models/message");
-
+const BCRYPT_WORK_FACTOR = 1;
 
 describe("Test User class", function () {
   beforeEach(async function () {
